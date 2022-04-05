@@ -75,4 +75,4 @@ jobs:
     
     steps:
       - name: Notify
-        run: echo Deployed'
+        run: echo Deployed
