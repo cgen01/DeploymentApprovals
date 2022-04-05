@@ -34,7 +34,7 @@ jobs:
     
     steps:
       - name: Notify
-        run: echo Starting Deployment to ${{ needs.parse.outputs.deploy-environment }}...'
+        run: echo Starting Deployment to ${{ needs.parse.outputs.deploy-environment }}...
         
   deploy:
     needs: [parse]
@@ -69,7 +69,7 @@ jobs:
       
   end-notify:
     needs: [deploy, alt-deploy]
-    if: ${{ needs.deploy.result == 'success' || needs.alt-deploy.result == 'success' }}
+    if: ${{ always() && (needs.deploy.result == 'success' || needs.alt-deploy.result == 'success') }}
     name: Notify of Build Complete
     runs-on: ubuntu-latest
     
