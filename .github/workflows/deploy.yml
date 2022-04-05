@@ -26,6 +26,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           issue_id: ${{ github.event.issue.number }}         
           payload_marker: target_payload 
+                    
+      - run: echo env ${{ fromJSON(steps.issue_body_parser.outputs.payload).environment }}
   
   notify:
     needs: [parse]
