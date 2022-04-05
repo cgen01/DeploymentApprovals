@@ -27,9 +27,9 @@ jobs:
           issue_id: ${{ github.event.issue.number }}         
           payload_marker: target_payload 
   
-  deploy-dev:
+  alt-deploy:
     needs: [parse]
-    if: ${{ needs.parse.outputs.deploy-environment == 'Dev' }}
+    if: ${{ needs.parse.outputs.deploy-environment == 'alt-prod' }}
     runs-on: ubuntu-latest
     
     steps:
@@ -51,7 +51,7 @@ jobs:
         name: Create approval Issue for Prod
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ENVIRONMENT: Prod
+          ENVIRONMENT: alt-prod
           RUNNUMBER: ${{ needs.parse.outputs.ci-run-number }}
         with:
           filename: .github/deployment-approval.md
@@ -76,13 +76,13 @@ jobs:
         run: echo Simulating Deployment 
 
   close-issue:
-    needs: [deploy-dev, deploy-prod]
+    needs: [alt-deploy, deploy-prod]
     if: ${{ always() }}
     runs-on: ubuntu-latest  
     
     steps:
       - name: Close Issue
-        if: ${{ needs.deploy-dev.result == 'success' || needs.deploy-prod.result == 'success' }}
+        if: ${{ needs.alt-deploy.result == 'success' || needs.deploy-prod.result == 'success' }}
         uses: peter-evans/close-issue@v1.0.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
