@@ -25,6 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      
       - name: Create PROD Issue
         uses: JasonEtco/create-an-issue@v2.6.0
         env:
