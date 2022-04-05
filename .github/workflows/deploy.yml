@@ -33,16 +33,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-               
-      - name: Download workflow artifact
-        uses: dawidd6/action-download-artifact@v2.15.0
-        with:
-          workflow: build.yml
-          repo: n3wt0n/DeploymentApprovals
-          run_number: ${{ needs.parse.outputs.ci-run-number }}
-          name: your-artifact-name
-          path: ${{ github.workspace }}
-          
       - name: Deploy to ALT-PROD
         run: echo Simulating Deployment to ALT PROD
     
@@ -52,16 +42,6 @@ jobs:
     runs-on: ubuntu-latest    
 
     steps:
-               
-      - name: Download workflow artifact
-        uses: dawidd6/action-download-artifact@v2.15.0
-        with:
-          workflow: build.yml
-          repo: n3wt0n/DeploymentApprovals
-          run_number: ${{ needs.parse.outputs.ci-run-number }}
-          name: your-artifact-name
-          path: ${{ github.workspace }}
-          
       - name: Deploy to PROD
         run: echo Simulating Deployment to PROD
 
