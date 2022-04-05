@@ -27,6 +27,24 @@ jobs:
           issue_id: ${{ github.event.issue.number }}         
           payload_marker: target_payload 
   
+  notify:
+    needs: [parse]
+    if: ${{ needs.parse.outputs.deploy-environment == 'Prod' || needs.parse.outputs.deploy-environment == 'alt-prod' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Notify
+        run: echo Starting Deployment to ${{ needs.parse.outputs.deploy-environment }}...'
+        
+  deploy:
+    needs: [parse]
+    if: ${{ needs.parse.outputs.deploy-environment == 'Prod' }}
+    runs-on: ubuntu-latest    
+
+    steps:
+      - name: Deploy to PROD
+        run: echo Simulating Deployment to PROD
+        
   alt-deploy:
     needs: [parse]
     if: ${{ needs.parse.outputs.deploy-environment == 'alt-prod' }}
@@ -36,30 +54,25 @@ jobs:
       - name: Deploy to ALT-PROD
         run: echo Simulating Deployment to ALT PROD
     
-  deploy-prod:
-    needs: [parse]
-    if: ${{ needs.parse.outputs.deploy-environment == 'Prod' }}
-    runs-on: ubuntu-latest    
-
-    steps:
-      - name: Deploy to PROD
-        run: echo Simulating Deployment to PROD
-
   close-issue:
-    needs: [alt-deploy, deploy-prod]
+    needs: [deploy, alt-deploy]
     if: ${{ always() }}
     runs-on: ubuntu-latest  
     
     steps:
       - name: Close Issue
-        if: ${{ needs.alt-deploy.result == 'success' || needs.deploy-prod.result == 'success' }}
+        if: ${{ needs.alt-deploy.result == 'success' || needs.deploy.result == 'success' }}
         uses: peter-evans/close-issue@v1.0.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           comment: 'Deployment Completed 🌟'
+      
+  end-notify:
+    needs: [deploy, alt-deploy]
+    if: ${{ needs.deploy.result == 'success' || needs.alt-deploy.result == 'success' }}
+    name: Notify of Build Complete
+    runs-on: ubuntu-latest
     
-    
-    
-    
-    
-    
+    steps:
+      - name: Notify
+        run: echo Deployed'
