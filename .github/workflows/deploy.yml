@@ -33,7 +33,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v2
                
       - name: Download workflow artifact
         uses: dawidd6/action-download-artifact@v2.15.0
@@ -44,17 +43,8 @@ jobs:
           name: your-artifact-name
           path: ${{ github.workspace }}
           
-      - name: Deploy to DEV
-        run: echo Simulating Deployment    
-          
-      - uses: JasonEtco/create-an-issue@v2
-        name: Create approval Issue for Prod
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ENVIRONMENT: alt-prod
-          RUNNUMBER: ${{ needs.parse.outputs.ci-run-number }}
-        with:
-          filename: .github/deployment-approval.md
+      - name: Deploy to ALT-PROD
+        run: echo Simulating Deployment to ALT PROD
     
   deploy-prod:
     needs: [parse]
@@ -73,7 +63,7 @@ jobs:
           path: ${{ github.workspace }}
           
       - name: Deploy to PROD
-        run: echo Simulating Deployment 
+        run: echo Simulating Deployment to PROD
 
   close-issue:
     needs: [alt-deploy, deploy-prod]
